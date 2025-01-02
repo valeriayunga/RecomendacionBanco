@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+  selectedProfile: string = ''; // o establece un valor por defecto
+
+  selectProfile(profile: string) {
+    this.selectedProfile = profile;
+  }
 
 }
