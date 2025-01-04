@@ -7,18 +7,21 @@ import { HomeComponent } from './home/home.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { CrearPerfilComponent } from './crear-perfil/crear-perfil.component';
 import { FormsModule } from '@angular/forms';
-
+import { VerPdfComponent } from './ver-pdf/ver-pdf.component';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SidebarComponent,
-    CrearPerfilComponent
+    CrearPerfilComponent,
+    VerPdfComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
