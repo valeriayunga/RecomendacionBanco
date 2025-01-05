@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="min-h-screen bg-gray-50">
+        <!-- Sidebar -->
+        <app-sidebar class="hidden md:block w-64 bg-white shadow-lg"></app-sidebar>
+
+        <main class="ml-64 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-semibold text-gray-800">Bienvenido, Carlos Salas!</h1>
+
+            </div>
+
+            <!-- Position Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8  ">
+                <!-- Arquitecto de Software -->
+                <button (click)="selectProfile('arquitecto')" [class.border-l-4]="selectedProfile === 'arquitecto'"
+                    [class.border-primary]="selectedProfile === 'arquitecto'"
+                    class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div [class.bg-gray-150]="selectedProfile === 'arquitecto'"
+                            [class.text-primary]="selectedProfile === 'arquitecto'"
+                            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'arquitecto'"
+                                [class.text-gray-400]="selectedProfile !== 'arquitecto'" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="font-medium text-gray-900">Arquitecto de Software</span>
+                    </div>
+                </button>
+
+                <!-- Gestor de Proyectos -->
+                <button (click)="selectProfile('gestor')" [class.border-l-4]="selectedProfile === 'gestor'"
+                    [class.border-primary]="selectedProfile === 'gestor'"
+                    class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div [class.bg-gray-150]="selectedProfile === 'gestor'"
+                            [class.text-green-500]="selectedProfile === 'gestor'"
+                            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'gestor'"
+                                [class.text-gray-400]="selectedProfile !== 'gestor'" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="font-medium text-gray-900">Gestor de Proyectos</span>
+                    </div>
+                </button>
+
+                <!-- Recursos Humanos -->
+                <button (click)="selectProfile('rrhh')" [class.border-l-4]="selectedProfile === 'rrhh'"
+                    [class.border-primary]="selectedProfile === 'rrhh'"
+                    class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div [class.bg-gray-150]="selectedProfile === 'rrhh'"
+                            [class.text-green-500]="selectedProfile === 'rrhh'"
+                            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'rrhh'"
+                                [class.text-gray-400]="selectedProfile !== 'rrhh'" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="font-medium text-gray-900">Recursos Humanos</span>
+                    </div>
+                </button>
+
+                <!-- Desarrollador de Software -->
+                <button (click)="selectProfile('desarrollador')"
+                    [class.border-l-4]="selectedProfile === 'desarrollador'"
+                    [class.border-primary]="selectedProfile === 'desarrollador'"
+                    class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div [class.bg-gray-150]="selectedProfile === 'desarrollador'"
+                            [class.text-green-500]="selectedProfile === 'desarrollador'"
+                            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'desarrollador'"
+                                [class.text-gray-400]="selectedProfile !== 'desarrollador'" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <span class="font-medium text-gray-900">Desarrollador de Software</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Update Button -->
+            <div class="flex justify-center mb-8">
+                <button [disabled]="!selectedProfile" [ngClass]="{
+                        'bg-gray-300 text-gray-500 cursor-auto': !selectedProfile,
+                        'bg-primary text-white hover:bg-green-700 cursor-pointer': selectedProfile
+                    }" (click)="showUploadFiles = true" class="px-6 py-2 rounded-lg transition-colors">
+                    Subir Candidatos
+                </button>
+            </div>
+
+
+            <div *ngIf="showUploadFiles" class="bg-white rounded-lg shadow p-6">
+                <!-- Título -->
+                <h2 class="text-lg font-semibold mb-4">Upload Files</h2>
+
+                <!-- Área para seleccionar archivos -->
+                <div class="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-green-700"
+                    (click)="fileInput.click()">
+                    <p class="text-gray-500">Click or drag the file here to upload</p>
+                    <p class="text-sm text-gray-400">
+                        Only support JPEG, PNG, GIF, MP4, PDF, Excel, Word, PPT
+                    </p>
+                    <input type="file" #fileInput (change)="onFileSelected($event)" class="hidden" multiple
+                        accept=".jpeg,.png,.gif,.mp4,.pdf,.xls,.xlsx,.doc,.docx,.ppt,.pptx" />
+                </div>
+
+                <!-- Lista de archivos seleccionados -->
+                <ul class="mt-4 space-y-2">
+                    <li *ngFor="let file of files; let i = index" class="flex items-center space-x-4 py-2">
+                        <div class="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full">
+                            <i [ngClass]="getFileIcon(file)" class="text-xl"></i>
+                        </div>
+                        <span class="flex-1 text-gray-700 truncate">{{ file.file.name }}</span>
+                        <div>
+                            <i *ngIf="file.status === 'uploaded'; else loadingIcon"
+                                class="fas fa-check-circle text-green-500"></i>
+                            <ng-template #loadingIcon>
+                                <i class="fas fa-circle-notch fa-spin text-green-400"></i>
+                            </ng-template>
+                        </div>
+                        <button (click)="removeFile(i)" class="text-gray-400 hover:text-red-500">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </li>
+                </ul>
+
+
+
+                <!-- Botón de confirmación -->
+                <div class="flex justify-end mt-4">
+                    <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                        (click)="confirmUpload()">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

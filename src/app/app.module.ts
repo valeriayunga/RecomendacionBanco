@@ -9,13 +9,15 @@ import { CrearPerfilComponent } from './crear-perfil/crear-perfil.component';
 import { FormsModule } from '@angular/forms';
 import { VerPdfComponent } from './ver-pdf/ver-pdf.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CandidatoIdoneoComponent } from './candidato-idoneo/candidato-idoneo.component';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SidebarComponent,
     CrearPerfilComponent,
-    VerPdfComponent
+    VerPdfComponent,
+    CandidatoIdoneoComponent
   ],
   imports: [
     BrowserModule,
