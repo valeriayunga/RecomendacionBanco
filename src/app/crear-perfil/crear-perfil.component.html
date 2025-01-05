@@ -1,192 +1,88 @@
 <div class="min-h-screen bg-gray-50">
   <!-- Sidebar -->
-  <app-sidebar class="hidden md:block w-64 bg-white shadow-lg"></app-sidebar>
+  <app-sidebar></app-sidebar>
 
   <!-- Main Content -->
-  <main class="md:ml-64 p-8">
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-semibold text-gray-800">Perfiles Ideales</h1>
-      <p class="text-gray-600 mt-2">Generar el Perfil Ideal con IA o Crear Perfil Estructurado</p>
-    </div>
-
-    <!-- Profile Selection Cards -->
-
-    <!-- Form Sections -->
+  <main class="ml-64 p-8">
     <form class="space-y-6">
-      <form class="space-y-6">
-        <div class="bg-white rounded-lg shadow-sm">
-          <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center gap-2">
-              <h2 class="text-lg font-semibold text-gray-800">Área de Estudio</h2>
-              <span class="px-3 py-1 text-sm bg-gray-100 rounded-full">{{ totalWeight }}</span>
-            </div>
+      <div
+        *ngFor="let section of sections; let i = index"
+        class="bg-white rounded-lg shadow-sm"
+      >
+        <!-- Título principal con el total -->
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex items-center gap-2">
+            <h2 class="text-lg font-semibold text-gray-800">
+              {{ section.name }} ({{ section.totalWeight }})
+            </h2>
           </div>
-          <div class="p-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div class="space-y-2 relative">
-                <label class="block text-sm font-medium text-gray-700">Área de Estudio</label>
-                <div>
-                  <button type="button" (click)="isOpen = !isOpen"
-                    class="w-full text-left rounded-lg border border-gray-300 shadow-sm py-2 px-3 bg-white focus:ring-2 focus:ring-primary focus:border-green-500 focus:outline-none">
-                    {{ selectedAreas.length > 0 ? selectedAreas.length + ' seleccionados' : 'Seleccionar' }}
-                  </button>
+        </div>
 
-                  <div *ngIf="isOpen"
-                    class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <!-- Subtítulos y valores -->
+        <div class="p-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div *ngFor="let subsection of section.subsections" class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                {{ subsection.name }} ({{ subsection.weight }})
+              </label>
 
-                    <div class="max-h-60 overflow-auto">
-                      <div *ngFor="let area of filteredAreas"
-                        class="flex items-center justify-between p-3 hover:bg-gray-50">
-                        <div class="flex items-center space-x-3">
-                          <input type="checkbox" [checked]="isAreaSelected(area.id)" (change)="toggleArea(area)"
-                            class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-500" />
-                          <span class="text-sm text-gray-700">{{ area.name }}</span>
-                        </div>
-                        <input type="number" [(ngModel)]="area.weight" (input)="updateWeight(area.id, $event)"
-                          class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                          [disabled]="!isAreaSelected(area.id)" />
+              <!-- Dropdown para seleccionar área existente -->
+              <select
+                [(ngModel)]="subsection.value"
+                name="subsectionValue{{ subsection.id }}"
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              >
+                <option *ngFor="let option of options.areas" [value]="option">
+                  {{ option }}
+                </option>
+              </select>
 
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <!-- Botón para agregar un nuevo área -->
+              <div class="flex gap-2 items-center mt-2">
+                <input
+                  type="text"
+                  [(ngModel)]="newArea"
+                  name="newAreaInput{{ subsection.id }}"
+                  placeholder="Agregar nueva área"
+                  class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                />
+                <button
+                  type="button"
+                  (click)="addNewArea()"
+                  class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                  Agregar
+                </button>
               </div>
-            </div>
-          </div>
-        </div>
-      </form>
 
+              <!-- Input para modificar el peso -->
+              <input
+                type="number"
+                [(ngModel)]="subsection.weight"
+                name="subsectionWeight{{ subsection.id }}"
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 mt-2"
+                (input)="updateWeight(i, subsection.id, $event)"
+              />
 
-      <!-- Academic Information -->
-      <div class="bg-white rounded-lg shadow-sm">
-        <div class="p-6 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-800">Información Académica</h2>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Área de Estudio</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Estado de Estudio</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
+              <!-- Campo para información adicional -->
+              <textarea
+                [(ngModel)]="subsection.additionalInfo"
+                name="subsectionAdditionalInfo{{ subsection.id }}"
+                placeholder="Agregar información adicional"
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 mt-2"
+                rows="3"
+              ></textarea>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Language -->
-      <div class="bg-white rounded-lg shadow-sm">
-        <div class="p-6 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-800">Idioma</h2>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div class="space-y-2">
-              <label for="escritura" class="block text-sm font-medium text-gray-700">Nivel de Escritura</label>
-              <select id="escritura"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-                <option>Básico</option>
-                <option>Intermedio</option>
-                <option>Avanzado</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label for="escritura" class="block text-sm font-medium text-gray-700">Nivel de Escritura</label>
-              <select id="escritura"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-                <option>Básico</option>
-                <option>Intermedio</option>
-                <option>Avanzado</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label for="habla" class="block text-sm font-medium text-gray-700">Nivel de Habla</label>
-              <select id="habla"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-                <option>Básico</option>
-                <option>Intermedio</option>
-                <option>Avanzado</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-      <!-- Work Experience -->
-      <div class="bg-white rounded-lg shadow-sm">
-        <div class="p-6 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-800">Experiencia Laboral</h2>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Nombre del Puesto</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Jerarquía</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Ubicación de la Empresa</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Skills -->
-      <div class="bg-white rounded-lg shadow-sm">
-        <div class="p-6 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-800">Habilidades</h2>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Habilidades Blandas</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Habilidades Técnicas</label>
-              <select
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit Button -->
+      <!-- Botón para enviar -->
       <div class="flex justify-end pt-6">
-        <button type="submit"
-          class="px-6 py-3 bg-primary text-white font-medium rounded-lg shadow hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
+        <button
+          type="submit"
+          class="px-6 py-3 bg-primary text-white font-medium rounded-lg shadow hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+        >
           Crear Perfil Deseado
         </button>
       </div>
