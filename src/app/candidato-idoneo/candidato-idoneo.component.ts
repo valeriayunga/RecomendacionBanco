@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-candidato-idoneo',
@@ -12,6 +13,8 @@ export class CandidatoIdoneoComponent implements OnInit {
   showUploadFiles: boolean = false;
   showSuccessMessage: boolean = false; // Nueva propiedad para el mensaje de éxito
 
+  constructor(private router: Router) {}
+
 
   ngOnInit(): void {
     throw new Error('Method not implemented.');
@@ -22,6 +25,10 @@ export class CandidatoIdoneoComponent implements OnInit {
     this.selectedProfile = profile;
     this.showUploadFiles = false; // Resetea el contenedor al cambiar de perfil
     this.showSuccessMessage = false; // Oculta mensaje de éxito al seleccionar nuevo perfil
+  }
+
+  redirigirMejorCandidato() {
+    this.router.navigate(['/buscar-candidato']); // Cambia "/buscar-candidato" según la ruta deseada
   }
 
   // Maneja el evento de selección de archivos

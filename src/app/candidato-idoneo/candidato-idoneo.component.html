@@ -171,12 +171,16 @@
                         <p class="text-base">Los candidatos fueron cargados con éxito</p>
                     </div>
                 </div>
-            </div>
+            </div>  
             <div *ngIf="showSuccessMessage" class="flex justify-center mt-6">
-                <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700">
-                    Buscar mejor candidato
+                <button
+                  class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                  (click)="redirigirMejorCandidato()"
+                >
+                  Buscar mejor candidato
                 </button>
-            </div>
+              </div>
+              
 
 
 

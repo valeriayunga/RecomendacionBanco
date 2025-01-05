@@ -5,25 +5,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
-
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-gray-50 flex">
         <!-- Sidebar -->
         <app-sidebar class="hidden md:block w-64 bg-white shadow-lg"></app-sidebar>
 
-        <main class="ml-64 p-8">
+        <!-- Contenido principal -->
+        <main class="flex-grow flex flex-col items-center justify-start p-8">
             <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-semibold text-gray-800">Bienvenido, Carlos Salas!</h1>
-
+            <div class="mb-6 text-left">
+                <h1 class="text-4xl font-semibold text-gray-800">Bienvenido, Carlos Salas!</h1>
             </div>
 
+            <!-- Contenedor central -->
+            <div class="flex flex-col items-center justify-center w-full h-3/4">
+                <!-- Gráfico animado -->
+                <div class="flex justify-center items-end gap-4 mb-12">
+                    <!-- Cada barra del gráfico -->
+                    <div *ngFor="let height of barHeights; let i = index" [ngStyle]="getBarStyle(i, height)"
+                        class="w-8 rounded bg-green-300" style="height: 50%;">
+                    </div>
+                </div>
+
+                <!-- Texto animado "Buscando" -->
+                <div *ngIf="!showSuccessMessage" class="flex justify-center items-center">
+                    <div class="animate-spin h-16 w-16 border-8 border-green-300 border-t-transparent rounded-full">
+                    </div>
+                    <p class="ml-4 text-2xl font-semibold text-gray-600">BUSCANDO...</p>
+                </div>
+
+                <!-- Mensaje y botón "Hecho" -->
+                <div *ngIf="showSuccessMessage" class="flex flex-col items-center">
+                    <!-- Mensaje -->
+                    <div
+                        class="flex items-center bg-green-100 border border-green-300 text-green-800 rounded-lg p-6 shadow w-full max-w-xl">
+                        <i class="fas fa-check-circle text-green-500 text-4xl mr-4"></i>
+                        <div>
+                            <h2 class="font-bold text-xl">Hecho</h2>
+                            <p class="text-base">Hemos encontrado a los mejores candidatos</p>
+                        </div>
+                    </div>
+                    <!-- Botón -->
+                    <div class="flex justify-center mt-6">
+                        <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                            (click)="redirigirMejorCandidato()">
+                            Visualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
         </main>
-
     </div>
-
 </body>
 
 </html>
