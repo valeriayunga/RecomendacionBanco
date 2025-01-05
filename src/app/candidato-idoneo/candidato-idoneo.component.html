@@ -157,7 +157,28 @@
                         Confirm
                     </button>
                 </div>
+
+
+
             </div>
+
+            <div class="flex justify-center mt-10">
+                <div *ngIf="showSuccessMessage"
+                    class="flex items-center bg-green-100 border border-green-300 text-green-800 rounded-lg p-6 shadow w-full max-w-xl">
+                    <i class="fas fa-check-circle text-green-500 text-4xl mr-4"></i>
+                    <div>
+                        <h2 class="font-bold text-xl">Hecho</h2>
+                        <p class="text-base">Los candidatos fueron cargados con éxito</p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="showSuccessMessage" class="flex justify-center mt-6">
+                <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                    Buscar mejor candidato
+                </button>
+            </div>
+
+
 
         </main>
 

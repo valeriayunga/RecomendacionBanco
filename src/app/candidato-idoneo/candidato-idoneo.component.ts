@@ -10,6 +10,7 @@ export class CandidatoIdoneoComponent implements OnInit {
   selectedProfile: string = '';
   files: { file: File; status: 'uploading' | 'uploaded' }[] = [];
   showUploadFiles: boolean = false;
+  showSuccessMessage: boolean = false; // Nueva propiedad para el mensaje de éxito
 
 
   ngOnInit(): void {
@@ -20,6 +21,7 @@ export class CandidatoIdoneoComponent implements OnInit {
   selectProfile(profile: string) {
     this.selectedProfile = profile;
     this.showUploadFiles = false; // Resetea el contenedor al cambiar de perfil
+    this.showSuccessMessage = false; // Oculta mensaje de éxito al seleccionar nuevo perfil
   }
 
   // Maneja el evento de selección de archivos
@@ -57,6 +59,8 @@ export class CandidatoIdoneoComponent implements OnInit {
   confirmUpload(): void {
     if (this.files.length > 0) {
       console.log('Archivos listos para ser enviados:', this.files);
+      this.showUploadFiles = false; // Oculta la sección de carga de archivos
+      this.showSuccessMessage = true; // Muestra el mensaje de éxito
     } else {
       console.warn('No hay archivos seleccionados.');
     }

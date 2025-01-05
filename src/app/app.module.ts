@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { VerPdfComponent } from './ver-pdf/ver-pdf.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CandidatoIdoneoComponent } from './candidato-idoneo/candidato-idoneo.component';
+import { BuscarCandidatoComponent } from './buscar-candidato/buscar-candidato.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,7 +18,9 @@ import { CandidatoIdoneoComponent } from './candidato-idoneo/candidato-idoneo.co
     SidebarComponent,
     CrearPerfilComponent,
     VerPdfComponent,
-    CandidatoIdoneoComponent
+    CandidatoIdoneoComponent,
+    BuscarCandidatoComponent,
+    
   ],
   imports: [
     BrowserModule,
