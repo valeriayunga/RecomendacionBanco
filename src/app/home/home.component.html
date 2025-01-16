@@ -13,20 +13,18 @@
     <!-- Position Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8  ">
       <!-- Arquitecto de Software -->
-      <button
-        (click)="selectProfile('arquitecto')"
-        [class.border-l-4]="selectedProfile === 'arquitecto'"
+      <button (click)="selectProfile('arquitecto')" [class.border-l-4]="selectedProfile === 'arquitecto'"
         [class.border-primary]="selectedProfile === 'arquitecto'"
         class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
         <div class="flex items-center space-x-3">
           <div [class.bg-gray-150]="selectedProfile === 'arquitecto'"
-               [class.text-primary]="selectedProfile === 'arquitecto'"
-               class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+            [class.text-primary]="selectedProfile === 'arquitecto'"
+            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
             <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'arquitecto'"
-                 [class.text-gray-400]="selectedProfile !== 'arquitecto'"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class.text-gray-400]="selectedProfile !== 'arquitecto'" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
           <span class="font-medium text-gray-900">Arquitecto de Software</span>
@@ -34,20 +32,18 @@
       </button>
 
       <!-- Gestor de Proyectos -->
-      <button
-        (click)="selectProfile('gestor')"
-        [class.border-l-4]="selectedProfile === 'gestor'"
+      <button (click)="selectProfile('gestor')" [class.border-l-4]="selectedProfile === 'gestor'"
         [class.border-primary]="selectedProfile === 'gestor'"
         class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
         <div class="flex items-center space-x-3">
-          <div [class.bg-gray-150]="selectedProfile === 'gestor'"
-               [class.text-green-500]="selectedProfile === 'gestor'"
-               class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+          <div [class.bg-gray-150]="selectedProfile === 'gestor'" [class.text-green-500]="selectedProfile === 'gestor'"
+            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
             <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'gestor'"
-                 [class.text-gray-400]="selectedProfile !== 'gestor'"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class.text-gray-400]="selectedProfile !== 'gestor'" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+              </path>
             </svg>
           </div>
           <span class="font-medium text-gray-900">Gestor de Proyectos</span>
@@ -55,20 +51,17 @@
       </button>
 
       <!-- Recursos Humanos -->
-      <button
-        (click)="selectProfile('rrhh')"
-        [class.border-l-4]="selectedProfile === 'rrhh'"
+      <button (click)="selectProfile('rrhh')" [class.border-l-4]="selectedProfile === 'rrhh'"
         [class.border-primary]="selectedProfile === 'rrhh'"
         class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
         <div class="flex items-center space-x-3">
-          <div [class.bg-gray-150]="selectedProfile === 'rrhh'"
-               [class.text-green-500]="selectedProfile === 'rrhh'"
-               class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+          <div [class.bg-gray-150]="selectedProfile === 'rrhh'" [class.text-green-500]="selectedProfile === 'rrhh'"
+            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
             <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'rrhh'"
-                 [class.text-gray-400]="selectedProfile !== 'rrhh'"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class.text-gray-400]="selectedProfile !== 'rrhh'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+              </path>
             </svg>
           </div>
           <span class="font-medium text-gray-900">Recursos Humanos</span>
@@ -76,20 +69,18 @@
       </button>
 
       <!-- Desarrollador de Software -->
-      <button
-        (click)="selectProfile('desarrollador')"
-        [class.border-l-4]="selectedProfile === 'desarrollador'"
+      <button (click)="selectProfile('desarrollador')" [class.border-l-4]="selectedProfile === 'desarrollador'"
         [class.border-primary]="selectedProfile === 'desarrollador'"
         class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
         <div class="flex items-center space-x-3">
           <div [class.bg-gray-150]="selectedProfile === 'desarrollador'"
-               [class.text-green-500]="selectedProfile === 'desarrollador'"
-               class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+            [class.text-green-500]="selectedProfile === 'desarrollador'"
+            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
             <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'desarrollador'"
-                 [class.text-gray-400]="selectedProfile !== 'desarrollador'"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class.text-gray-400]="selectedProfile !== 'desarrollador'" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
             </svg>
           </div>
           <span class="font-medium text-gray-900">Desarrollador de Software</span>
@@ -99,10 +90,11 @@
 
     <!-- Update Button -->
     <div class="flex justify-end mb-8">
-      <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+      <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secundary transition-colors">
         Actualizar Candidatos
       </button>
     </div>
+
 
     <!-- Search Bar -->
     <div class="relative mb-8">
@@ -125,7 +117,8 @@
               Electrónico</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número Teléfono
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aspiración Salarial</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aspiración
+              Salarial</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
           </tr>
         </thead>

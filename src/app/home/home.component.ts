@@ -9,6 +9,8 @@ import { ApiService } from '../services/api.service'; // Asegúrate de importar 
 export class HomeComponent implements OnInit {
   selectedProfile: string = ''; // Variable para el perfil seleccionado
   personalMaps: any[] = []; // Variable para almacenar los datos de la API
+  isHovered = false;
+
 
   constructor(private apiService: ApiService) { } // Inyecta el servicio
 
@@ -36,5 +38,9 @@ export class HomeComponent implements OnInit {
   // Método para seleccionar un perfil
   selectProfile(profile: string) {
     this.selectedProfile = profile;
+  }
+  generateAIProfile() {
+    // Implementa aquí la lógica para generar el perfil
+    console.log('Generando perfil con IA...');
   }
 }

@@ -20,7 +20,8 @@ import { BuscarCandidatoComponent } from './buscar-candidato/buscar-candidato.co
     VerPdfComponent,
     CandidatoIdoneoComponent,
     BuscarCandidatoComponent,
-    
+
+
   ],
   imports: [
     BrowserModule,

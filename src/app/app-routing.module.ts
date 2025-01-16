@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'crear-perfil', component: CrearPerfilComponent },
   { path: 'ver-pdf/:id', component: VerPdfComponent},
   { path: 'candidato-idoneo', component: CandidatoIdoneoComponent},
-  { path: 'buscar-candidato', component: BuscarCandidatoComponent}
+  { path: 'buscar-candidato', component: BuscarCandidatoComponent},
 ];
 
 @NgModule({
