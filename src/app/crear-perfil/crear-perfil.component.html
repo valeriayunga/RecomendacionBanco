@@ -2,90 +2,175 @@
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
-  <!-- Main Content -->
   <main class="ml-64 p-8">
-    <form class="space-y-6">
-      <div
-        *ngFor="let section of sections; let i = index"
-        class="bg-white rounded-lg shadow-sm"
-      >
-        <!-- Título principal con el total -->
-        <div class="p-6 border-b border-gray-200">
-          <div class="flex items-center gap-2">
-            <h2 class="text-lg font-semibold text-gray-800">
-              {{ section.name }} ({{ section.totalWeight }})
-            </h2>
+    <div class="min-h-screen bg-gray-50">
+      <!-- Horizontal Menu -->
+      <nav class="bg-green-600 text-white p-4">
+        <div class="flex justify-between items-center">
+          <h1 class="text-xl font-bold">Crear Perfil</h1>
+          <div class="flex space-x-4">
+            <button
+              class="hover:underline"
+              (click)="navigateTo('crear-perfil-estructurado')"
+            >
+              Crear Perfil Estructurado
+            </button>
+            <button
+              class="hover:underline"
+              (click)="navigateTo('generar-perfil-ia')"
+            >
+              Generar el Perfil Ideal con IA
+            </button>
           </div>
         </div>
+      </nav>
 
-        <!-- Subtítulos y valores -->
-        <div class="p-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div *ngFor="let subsection of section.subsections" class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">
-                {{ subsection.name }} ({{ subsection.weight }})
-              </label>
-
-              <!-- Dropdown para seleccionar área existente -->
-              <select
-                [(ngModel)]="subsection.value"
-                name="subsectionValue{{ subsection.id }}"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              >
-                <option *ngFor="let option of options.areas" [value]="option">
-                  {{ option }}
-                </option>
-              </select>
-
-              <!-- Botón para agregar un nuevo área -->
-              <div class="flex gap-2 items-center mt-2">
-                <input
-                  type="text"
-                  [(ngModel)]="newArea"
-                  name="newAreaInput{{ subsection.id }}"
-                  placeholder="Agregar nueva área"
-                  class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-                <button
-                  type="button"
-                  (click)="addNewArea()"
-                  class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                >
-                  Agregar
-                </button>
-              </div>
-
-              <!-- Input para modificar el peso -->
+      <!-- Dynamic Content -->
+      <main class="p-8">
+        <ng-container *ngIf="currentView === 'crear-perfil-estructurado'">
+          <!-- Include your current content here -->
+          <!-- Existing form for creating structured profiles -->
+          <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+            <div class="flex gap-4 items-center">
               <input
-                type="number"
-                [(ngModel)]="subsection.weight"
-                name="subsectionWeight{{ subsection.id }}"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 mt-2"
-                (input)="updateWeight(i, subsection.id, $event)"
+                type="text"
+                [(ngModel)]="newSectionName"
+                placeholder="Nombre de la nueva sección"
+                class="flex-1 p-2 border rounded-md"
+                name="newSectionName"
               />
-
-              <!-- Campo para información adicional -->
-              <textarea
-                [(ngModel)]="subsection.additionalInfo"
-                name="subsectionAdditionalInfo{{ subsection.id }}"
-                placeholder="Agregar información adicional"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 mt-2"
-                rows="3"
-              ></textarea>
+              <button
+                (click)="addSection()"
+                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+              >
+                Agregar Sección
+              </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Botón para enviar -->
-      <div class="flex justify-end pt-6">
-        <button
-          type="submit"
-          class="px-6 py-3 bg-primary text-white font-medium rounded-lg shadow hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-        >
-          Crear Perfil Deseado
-        </button>
-      </div>
-    </form>
+          <!-- Existing Sections -->
+          <div class="space-y-8">
+            <section
+              *ngFor="let section of sections; let sectionIndex = index"
+              class="border p-4 rounded-lg"
+            >
+              <!-- Section Header -->
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <h2 class="text-lg font-semibold">{{ section.name }}</h2>
+                  <span class="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                    {{ calculateTotalWeight(sectionIndex) }}
+                  </span>
+                </div>
+                <button
+                  (click)="removeSection(section.id)"
+                  class="text-red-600 hover:text-red-700"
+                >
+                  Eliminar Sección
+                </button>
+              </div>
+          
+              <!-- Add Subsection Form -->
+              <div class="mb-4 p-3 bg-gray-50 rounded-md">
+                <div class="flex gap-4 items-center">
+                  <input
+                    type="text"
+                    [(ngModel)]="newSubsectionName"
+                    placeholder="Nombre de la nueva subsección"
+                    class="flex-1 p-2 border rounded-md"
+                  />
+                  <button
+                    (click)="addSubsection(section.id)"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >
+                    Agregar Subsección
+                  </button>
+                </div>
+              </div>
+          
+              <!-- Subsections Grid -->
+              <div class="grid grid-cols-2 gap-6">
+                <div
+                  *ngFor="let subsection of section.subsections; let subsectionIndex = index"
+                  class="space-y-2"
+                >
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <label class="font-medium">{{ subsection.name }}</label>
+                      <input
+                        type="number"
+                        class="w-16 p-1 border rounded-full text-sm text-center"
+                        [(ngModel)]="subsection.totalWeight"
+                        (change)="calculateTotalWeight(sectionIndex)"
+                      />
+                    </div>
+                    <button
+                      (click)="removeSubsection(section.id, subsection.id)"
+                      class="text-red-600 hover:text-red-700 text-sm"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+          
+                  <!-- Editable Dropdown -->
+                  <div class="relative">
+                    <input
+                      type="text"
+                      [(ngModel)]="subsection.selectedOption"
+                      placeholder="Escribir o seleccionar"
+                      class="w-full p-2 border rounded-md"
+                      (input)="filterOptions(subsection)"
+                      (focus)="subsection.showDropdown = true"
+                      (blur)="hideDropdown(subsection)"
+                    />
+                    <ul
+                      *ngIf="subsection.showDropdown"
+                      class="absolute z-10 bg-white border rounded-md shadow-md w-full max-h-40 overflow-auto"
+                    >
+                      <li
+                        *ngFor="let option of subsection.filteredOptions"
+                        (mousedown)="selectOption(subsection, option)"
+                        class="p-2 cursor-pointer hover:bg-gray-100"
+                      >
+                        {{ option }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          
+
+          <!-- Submit Button -->
+          <div class="flex justify-center mt-8">
+            <button
+              type="submit"
+              class="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700"
+            >
+              Crear Perfil Deseado
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="currentView === 'generar-perfil-ia'">
+          <!-- Content for generating profiles using AI -->
+          <div class="text-center mt-10">
+            <h2 class="text-xl font-bold mb-6">
+              Generar el Perfil Ideal con IA
+            </h2>
+            <p class="text-gray-700 mb-8">
+              Usa la inteligencia artificial para crear el perfil ideal basado
+              en tus necesidades específicas.
+            </p>
+            <button
+              class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
+            >
+              Generar Perfil
+            </button>
+          </div>
+        </ng-container>
+      </main>
+    </div>
   </main>
 </div>
