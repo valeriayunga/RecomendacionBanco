@@ -26,4 +26,14 @@ export class ApiService {
       responseType: 'blob' // Indica que la respuesta es un Blob (archivo binario)
     });
   }
+
+  uploadPDFs(files: File[]): Observable<any> {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file, file.name); // Usa 'files' sin índices
+    });    
+
+    return this.http.post(`${this.apiUrl}/personal_map/extract_and_save_multiple_pdfs`, formData);
+}
+
 }

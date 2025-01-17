@@ -122,10 +122,10 @@
                     (click)="fileInput.click()">
                     <p class="text-gray-500">Click or drag the file here to upload</p>
                     <p class="text-sm text-gray-400">
-                        Only support JPEG, PNG, GIF, MP4, PDF, Excel, Word, PPT
+                        Only support PDF
                     </p>
-                    <input type="file" #fileInput (change)="onFileSelected($event)" class="hidden" multiple
-                        accept=".jpeg,.png,.gif,.mp4,.pdf,.xls,.xlsx,.doc,.docx,.ppt,.pptx" />
+                    <input type="file" #fileInput (change)="onFileSelected($event)" class="hidden" accept=".pdf"
+                        multiple>
                 </div>
 
                 <!-- Lista de archivos seleccionados -->
@@ -171,16 +171,14 @@
                         <p class="text-base">Los candidatos fueron cargados con éxito</p>
                     </div>
                 </div>
-            </div>  
+            </div>
             <div *ngIf="showSuccessMessage" class="flex justify-center mt-6">
-                <button
-                  class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700"
-                  (click)="redirigirMejorCandidato()"
-                >
-                  Buscar mejor candidato
+                <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                    (click)="redirigirMejorCandidato()">
+                    Buscar mejor candidato
                 </button>
-              </div>
-              
+            </div>
+
 
 
 
