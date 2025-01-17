@@ -1,24 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-candidato-idoneo',
   templateUrl: './candidato-idoneo.component.html',
   styleUrls: ['./candidato-idoneo.component.css']
 })
-export class CandidatoIdoneoComponent implements OnInit {
+export class CandidatoIdoneoComponent  {
 
   selectedProfile: string = '';
   files: { file: File; status: 'uploading' | 'uploaded' }[] = [];
   showUploadFiles: boolean = false;
   showSuccessMessage: boolean = false; // Nueva propiedad para el mensaje de éxito
 
-  constructor(private router: Router) {}
-
-
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+  constructor(private router: Router, private apiService: ApiService) {}
 
 
   selectProfile(profile: string) {
@@ -36,12 +32,21 @@ export class CandidatoIdoneoComponent implements OnInit {
     const selectedFiles = event.target.files;
     if (selectedFiles) {
       for (let i = 0; i < selectedFiles.length; i++) {
-        const newFile: { file: File; status: 'uploading' | 'uploaded' } = { file: selectedFiles[i], status: 'uploading' };
-        this.files.push(newFile);
-        this.simulateUpload(this.files.length - 1); // Envía el índice correcto
+        const file = selectedFiles[i];
+        const fileType = file.name.split('.').pop()?.toLowerCase();
+  
+        if (fileType === 'pdf') {
+          const newFile: { file: File; status: 'uploading' | 'uploaded' } = { file, status: 'uploading' };
+          this.files.push(newFile);
+          this.simulateUpload(this.files.length - 1); // Simula la carga
+        } else {
+          console.warn(`Archivo no permitido: ${file.name}. Solo se aceptan archivos PDF.`);
+          alert(`El archivo ${file.name} no es un PDF. Por favor, sube únicamente archivos en formato PDF.`);
+        }
       }
     }
   }
+  
 
 
   // Simula la carga de archivos (solo para fines visuales)
@@ -65,9 +70,18 @@ export class CandidatoIdoneoComponent implements OnInit {
   // Simula la confirmación de los archivos cargados
   confirmUpload(): void {
     if (this.files.length > 0) {
-      console.log('Archivos listos para ser enviados:', this.files);
-      this.showUploadFiles = false; // Oculta la sección de carga de archivos
-      this.showSuccessMessage = true; // Muestra el mensaje de éxito
+      const filesToUpload = this.files.map(fileObj => fileObj.file);
+      this.apiService.uploadPDFs(filesToUpload).subscribe({
+        next: response => {
+          console.log('Archivos procesados exitosamente:', response);
+          this.showUploadFiles = false; // Oculta el contenedor de carga
+          this.showSuccessMessage = true; // Muestra el mensaje de éxito
+          this.files = []; // Limpia la lista de archivos
+        },
+        error: err => {
+          console.error('Error al procesar los archivos:', err);
+        }
+      });
     } else {
       console.warn('No hay archivos seleccionados.');
     }
