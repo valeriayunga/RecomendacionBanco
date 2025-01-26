@@ -11,82 +11,62 @@
     </div>
 
     <!-- Position Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8  ">
-      <!-- Arquitecto de Software -->
-      <button (click)="selectProfile('arquitecto')" [class.border-l-4]="selectedProfile === 'arquitecto'"
-        [class.border-primary]="selectedProfile === 'arquitecto'"
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <button *ngFor="let tag of tags" (click)="selectProfile(tag)" [class.border-l-4]="selectedProfile === tag"
+        [class.border-primary]="selectedProfile === tag"
         class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
         <div class="flex items-center space-x-3">
-          <div [class.bg-gray-150]="selectedProfile === 'arquitecto'"
-            [class.text-primary]="selectedProfile === 'arquitecto'"
+          <div [class.bg-gray-150]="selectedProfile === tag" [class.text-primary]="selectedProfile === tag"
             class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'arquitecto'"
-              [class.text-gray-400]="selectedProfile !== 'arquitecto'" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24">
+            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === tag"
+              [class.text-gray-400]="selectedProfile !== tag" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <span class="font-medium text-gray-900">Arquitecto de Software</span>
-        </div>
-      </button>
-
-      <!-- Gestor de Proyectos -->
-      <button (click)="selectProfile('gestor')" [class.border-l-4]="selectedProfile === 'gestor'"
-        [class.border-primary]="selectedProfile === 'gestor'"
-        class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
-        <div class="flex items-center space-x-3">
-          <div [class.bg-gray-150]="selectedProfile === 'gestor'" [class.text-green-500]="selectedProfile === 'gestor'"
-            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'gestor'"
-              [class.text-gray-400]="selectedProfile !== 'gestor'" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
-              </path>
-            </svg>
-          </div>
-          <span class="font-medium text-gray-900">Gestor de Proyectos</span>
-        </div>
-      </button>
-
-      <!-- Recursos Humanos -->
-      <button (click)="selectProfile('rrhh')" [class.border-l-4]="selectedProfile === 'rrhh'"
-        [class.border-primary]="selectedProfile === 'rrhh'"
-        class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
-        <div class="flex items-center space-x-3">
-          <div [class.bg-gray-150]="selectedProfile === 'rrhh'" [class.text-green-500]="selectedProfile === 'rrhh'"
-            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'rrhh'"
-              [class.text-gray-400]="selectedProfile !== 'rrhh'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-              </path>
-            </svg>
-          </div>
-          <span class="font-medium text-gray-900">Recursos Humanos</span>
-        </div>
-      </button>
-
-      <!-- Desarrollador de Software -->
-      <button (click)="selectProfile('desarrollador')" [class.border-l-4]="selectedProfile === 'desarrollador'"
-        [class.border-primary]="selectedProfile === 'desarrollador'"
-        class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
-        <div class="flex items-center space-x-3">
-          <div [class.bg-gray-150]="selectedProfile === 'desarrollador'"
-            [class.text-green-500]="selectedProfile === 'desarrollador'"
-            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg class="h-6 w-6" [class.text-primary]="selectedProfile === 'desarrollador'"
-              [class.text-gray-400]="selectedProfile !== 'desarrollador'" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-            </svg>
-          </div>
-          <span class="font-medium text-gray-900">Desarrollador de Software</span>
+          <span class="font-medium text-gray-900">{{ tag }}</span>
         </div>
       </button>
     </div>
+
+
+    <!-- Modal -->
+    <div *ngIf="showModal"
+      class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+      <div class="relative w-11/12 md:w-2/3 lg:w-1/2 bg-white rounded-2xl shadow-xl p-6 max-h-screen overflow-y-auto">
+        <div class="text-center">
+          <h2 class="text-2xl font-extrabold text-gray-900 mb-6">
+            Perfiles para el tag: {{ selectedProfile }}
+          </h2>
+          <div *ngFor="let profile of profiles" class="mb-6">
+            <h3 class="text-xl font-bold text-gray-700 mb-3">{{ profile.Tag }}</h3>
+            <div *ngFor="let section of profile.Secciones" class="mb-4">
+              <h4 class="text-lg font-semibold text-gray-600 border-b pb-2">{{ section.name }}</h4>
+              <div *ngFor="let subsection of section.Subsecciones" class="mt-2">
+                <h5 class="text-md font-medium text-gray-500">{{ subsection.name }}</h5>
+                <ul class="list-disc list-inside text-gray-700 ml-4">
+                  <li *ngFor="let value of subsection.values" class="py-1">
+                    <span class="font-medium">{{ value.name }}</span>
+                    <span class="text-gray-500"> (Ponderación: {{ value.ponderacion }})</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 sticky bottom-0 bg-white py-4">
+            <button (click)="closeModal()"
+              class="w-full md:w-1/2 py-3 bg-primary text-white font-bold rounded-lg shadow-md hover:bg-secundary transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
 
     <!-- Update Button -->
     <div class="flex justify-end mb-8">
@@ -97,6 +77,7 @@
 
 
     <!-- Search Bar -->
+    <!--
     <div class="relative mb-8">
       <input type="text" placeholder="Buscar Candidatos"
         class="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none">
@@ -105,6 +86,7 @@
           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
       </svg>
     </div>
+    -->
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-x-auto">

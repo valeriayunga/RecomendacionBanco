@@ -15,6 +15,16 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/home/get/personal_maps`);
   }
 
+  // Nuevo método para obtener los tags
+  getTags(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ideal_profile/tags/get`);
+  }
+
+  // Nuevo método para obtener perfiles por tag
+  getProfilesByTag(tag: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ideal_profile/profile/tag/${tag}`);
+  }
+
   // Método para obtener el PDF desde el endpoint
   getPdf(): Observable<Blob> {
     const headers = new HttpHeaders({
@@ -31,9 +41,9 @@ export class ApiService {
     const formData = new FormData();
     files.forEach(file => {
       formData.append('files', file, file.name); // Usa 'files' sin índices
-    });    
+    });
 
     return this.http.post(`${this.apiUrl}/personal_map/extract_and_save_multiple_pdfs`, formData);
-}
+  }
 
 }
