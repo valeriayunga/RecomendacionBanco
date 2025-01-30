@@ -14,29 +14,48 @@
       <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
     </div>
 
-    <!-- Position Cards -->
-    <div *ngIf="!loading" class="mb-8">
-      <div class="mb-4 relative">
-          <input type="text" placeholder="Buscar Tag"
-                 class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none"
-                 [(ngModel)]="tagSearchQuery"
-                 (input)="filterTags()"
-          >
-          <svg class="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-      </div>
-      <div class="flex flex-wrap gap-2">
-          <button *ngFor="let tag of filteredTags" (click)="selectProfile(tag)"
-                  [class.border-2]="selectedProfile === tag" [class.border-primary]="selectedProfile === tag"
-                  class="bg-white border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
-              {{ tag }}
-          </button>
-      </div>
-  </div>
+    <!-- Search Bar -->
+<div class="relative mb-8">
+  <input
+    type="text"
+    placeholder="Buscar Tag"
+    class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none"
+    [(ngModel)]="tagSearchQuery"
+    (input)="filterTags()"
+  >
+  <svg class="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+  </svg>
+</div>
 
-    
+<!-- Tags Results -->
+<div class="space-y-4">
+  <button *ngFor="let tag of filteredTags"
+    (click)="selectProfile(tag)"
+    [class.border-l-4]="selectedProfile === tag"
+    [class.border-primary]="selectedProfile === tag"
+    class="w-full bg-white rounded-lg shadow p-4 hover:bg-gray-100 transition-colors">
+    <div class="flex items-center space-x-3">
+      <div
+        [class.bg-gray-150]="selectedProfile === tag"
+        [class.text-primary]="selectedProfile === tag"
+        class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+        <svg
+          class="h-6 w-6"
+          [class.text-primary]="selectedProfile === tag"
+          [class.text-gray-400]="selectedProfile !== tag"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <span class="font-medium text-gray-900">{{ tag }}</span>
+    </div>
+  </button>
+</div>
+
+
 <!-- Modal Mejorado -->
 <div *ngIf="showModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
   <div class="relative w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 bg-white rounded-2xl shadow-xl p-8 max-h-screen overflow-y-auto">
@@ -70,7 +89,7 @@
               Ponderación Total: {{ section.ponderacion }}
             </span>
           </div>
-          
+
          <div *ngIf="expandedSections[section.name]">
             <div *ngFor="let subsection of section.Subsecciones" class="mb-6 last:mb-0">
               <div class="flex justify-between items-center mb-3">
@@ -79,9 +98,9 @@
                   Ponderación: {{ subsection.ponderacion }}
                 </span>
               </div>
-              
+
               <ul class="space-y-2">
-                <li *ngFor="let value of subsection.values" 
+                <li *ngFor="let value of subsection.values"
                     class="flex justify-between items-center bg-white p-3 rounded-lg border border-gray-200 hover:border-primary transition-colors">
                   <span class="text-gray-700 font-medium">{{ value.name }}</span>
                   <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm">

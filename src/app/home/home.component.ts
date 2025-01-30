@@ -27,13 +27,13 @@ export class HomeComponent implements OnInit {
     searchQuery: string = '';
     filteredPersonalMaps: PersonalMap[] = [];
 
-    // Expandir 
+    // Expandir
     expandedSections: { [key: string]: boolean } = {};
-    visibleTagsCount = 8; 
+    visibleTagsCount = 8;
     visibleTags: string[] = [];
     tagSearchQuery: string = '';
     filteredTags: string[] = [];
-    defaultTags: string[] = []; 
+    defaultTags: string[] = [];
 
     constructor(private apiService: ApiService) { }
 
@@ -72,23 +72,26 @@ toggleSection(sectionName: string) {
       this.apiService.getTags().subscribe(
           (response) => {
               if (response.status === 200) {
-                  this.tagsList = response.data;
-                  this.filteredTags = [...this.tagsList]
-                   this.defaultTags = this.tagsList.slice(0, 4);
+                  // Eliminar duplicados usando Set
+                  this.tagsList = Array.from(new Set(response.data));
+                  this.filteredTags = [...this.tagsList];
+                  this.defaultTags = this.tagsList.slice(0, 4);
               } else {
                   this.showNotification('Error al obtener los tags.');
                   console.error('Error en la respuesta de la API:', response);
               }
           },
           (error) => {
-               this.showNotification('Error al comunicarse con el servidor.');
+              this.showNotification('Error al comunicarse con el servidor.');
               console.error('Error al obtener los tags:', error);
           },
-           () => {
-               this.loading = false; 
-           }
+          () => {
+              this.loading = false;
+          }
       );
   }
+
+
   updateVisibleTags() {
    this.visibleTags = this.tagsList.slice(0, this.visibleTagsCount);
   }
