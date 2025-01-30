@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { ApiService } from '../services/api.service';
 
 interface Entry {
   value: string;
@@ -38,9 +39,17 @@ interface Section {
 })
 export class CrearPerfilComponent {
   newSectionName: string = '';
+  aiPrompt: string = '';
   newSubsectionName: string = '';
   selectedSectionForSubsection: number | null = null;
   currentView: string = 'crear-perfil-estructurado';
+  isLoading: boolean = false;
+  profileGenerated: boolean = false;
+
+
+
+
+  constructor(private apiService: ApiService) { }
 
   sections: Section[] = [
     {
@@ -231,18 +240,21 @@ export class CrearPerfilComponent {
           id: this.getNextSubsectionId(),
           name: this.newSubsectionName,
           totalWeight: 0,
-          options: [], // Inicializar con las opciones que necesites
-          filteredOptions: [], // Inicializar vacío
-          selectedOptions: [], // Inicializar como array vacío
+          options: [], // Inicializa con opciones vacías (puedes llenarlas después)
+          filteredOptions: [], // Copia las opciones desde el inicio
+          selectedOptions: [],
           showDropdown: false,
-          searchQuery: '' // Inicializar como string vacío
+          searchQuery: ''
         };
+
+        newSubsection.filteredOptions = [...newSubsection.options]; // Asegurar que tenga opciones disponibles
         section.subsections.push(newSubsection);
         this.newSubsectionName = '';
         this.selectedSectionForSubsection = null;
       }
     }
   }
+
 
 
   removeSection(sectionId: number): void {
@@ -280,25 +292,118 @@ export class CrearPerfilComponent {
       option.name.toLowerCase().includes(query)
     );
   }
-  
-  toggleDropdown(subsection: Subsection): void {
-    // Cerrar todos los dropdowns de subsecciones
-    this.sections.forEach(section =>
-      section.subsections.forEach(sub => (sub.showDropdown = false))
-    );
-  
-    // Abrir el dropdown correspondiente
-    subsection.showDropdown = true;
-  }
-  
-  selectOption(subsection: Subsection, option: { id: number; name: string; weight: number }): void {
-    if (!subsection.selectedOptions.includes(option.id)) {
-      subsection.selectedOptions.push(option.id);
-      subsection.searchQuery = option.name; // Mostrar la selección en el input
+  toggleOption(subsection: Subsection, optionId: number): void {
+    const index = subsection.selectedOptions.indexOf(optionId);
+
+    if (index === -1) {
+      subsection.selectedOptions.push(optionId);
+
+      // Asignar un peso predeterminado si es necesario
+      const option = subsection.options.find(opt => opt.id === optionId);
+      if (option && option.weight === 0) {
+        option.weight = 10; // Ajusta este valor si es necesario
+      }
+    } else {
+      subsection.selectedOptions.splice(index, 1);
     }
-    subsection.showDropdown = false; // Cerrar el dropdown
+
+    this.calculateSubsectionWeight(subsection);
   }
-  
+
+  calculateSubsectionWeight(subsection: Subsection): void {
+    subsection.totalWeight = subsection.options.reduce((total, option) => {
+      return subsection.selectedOptions.includes(option.id) ? total + option.weight : total;
+    }, 0);
+
+    this.calculateSectionWeight();
+  }
+
+  calculateSectionWeight(): void {
+    this.sections.forEach(section => {
+      section.totalWeight = section.subsections.reduce((total, subsection) => total + subsection.totalWeight, 0);
+    });
+  }
+
+  // NUEVO: Función para actualizar el peso de la opción y recalcular
+  updateSubsectionWeight(subsection: Subsection, section: Section): void {
+    this.calculateSubsectionWeight(subsection);
+  }
+
+  updateProfile(): void {
+    this.isLoading = true;
+    const transformedProfile = this.transformSections();
+
+    this.apiService.publishProfile(transformedProfile).subscribe(
+      (response) => {
+        console.log("Perfil actualizado correctamente:", response);
+        alert("El perfil se ha actualizado con éxito.");
+      },
+      (error) => {
+        console.error("Error al actualizar el perfil:", error);
+        alert("Hubo un error al actualizar el perfil.");
+      }
+    ).add(() => {
+      this.isLoading = false;
+    });
+  }
+
+
+
+
+
+
+
+  toggleDropdown(subsection: Subsection): void {
+    // Cerrar otros dropdowns antes de abrir el actual
+    this.sections.forEach(section => {
+      section.subsections.forEach(sub => {
+        if (sub !== subsection) {
+          sub.showDropdown = false;
+        }
+      });
+    });
+
+    // Alternar el dropdown de la subsección actual
+    subsection.showDropdown = !subsection.showDropdown;
+  }
+
+
+  // Cerrar el menú cuando se haga clic fuera
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    this.sections.forEach(section => {
+      section.subsections.forEach(subsection => {
+        const targetElement = event.target as HTMLElement;
+        if (!targetElement.closest('.dropdown-container')) {
+          subsection.showDropdown = false;
+        }
+      });
+    });
+  }
+
+
+  selectOption(subsection: Subsection, option: { id: number; name: string; weight: number }): void {
+    // Verificar si la opción ya está seleccionada
+    const index = subsection.selectedOptions.indexOf(option.id);
+    if (index === -1) {
+      // Agregar la opción si no está seleccionada
+      subsection.selectedOptions.push(option.id);
+    } else {
+      // Remover la opción si ya está seleccionada
+      subsection.selectedOptions.splice(index, 1);
+    }
+
+    // Actualizar el texto mostrado en el dropdown con todas las opciones seleccionadas
+    subsection.searchQuery = subsection.options
+      .filter(opt => subsection.selectedOptions.includes(opt.id))
+      .map(opt => opt.name)
+      .join(", ");
+
+    // Cerrar el dropdown después de seleccionar
+    subsection.showDropdown = false;
+  }
+
+
 
   isOptionSelected(subsection: Subsection, optionId: number): boolean {
     return subsection.selectedOptions.includes(optionId);
@@ -309,5 +414,141 @@ export class CrearPerfilComponent {
       subsection.showDropdown = false;
     }, 200); // Esperar para evitar conflictos con el clic en las opciones
   }
+
+
+  printProfile(): void {
+    const profileData = this.transformSections();
+    console.log("Perfil Transformado:", JSON.stringify(profileData, null, 2));
+  }
+
+
+  transformSections(): any {
+    const transformedData = {
+      "Secciones": [] as Array<{
+        name: string;
+        ponderacion: number;
+        Subsecciones: Array<{
+          name: string;
+          values: Array<{ name: string; ponderacion: number }>;
+          ponderacion: number;
+        }>
+      }>,
+      "Tag": "Transformación e Innovación" // Puedes hacerlo dinámico si lo deseas
+    };
+
+    this.sections.forEach(section => {
+      const transformedSection = {
+        name: section.name,
+        ponderacion: section.totalWeight,
+        Subsecciones: [] as Array<{
+          name: string;
+          values: Array<{ name: string; ponderacion: number }>;
+          ponderacion: number;
+        }>
+      };
+
+      section.subsections.forEach(subsection => {
+        const selectedValues = subsection.options
+          .filter(option => subsection.selectedOptions.includes(option.id))
+          .map(option => ({
+            name: option.name,
+            ponderacion: option.weight
+          }));
+
+        transformedSection.Subsecciones.push({
+          name: subsection.name,
+          values: selectedValues,
+          ponderacion: subsection.totalWeight
+        });
+      });
+
+      transformedData.Secciones.push(transformedSection);
+    });
+
+    return transformedData;
+  }
+
+  sendProfile(): void {
+    this.isLoading = true;
+    const transformedProfile = this.transformSections(); // Convertir el formulario a JSON
+
+    this.apiService.publishProfile(transformedProfile).subscribe(
+        (response) => {
+            console.log("Perfil actualizado correctamente:", response);
+            alert("El perfil se ha actualizado con éxito.");
+        },
+        (error) => {
+            console.error("Error al actualizar el perfil:", error);
+            alert("Hubo un error al actualizar el perfil.");
+        }
+    ).add(() => {
+        this.isLoading = false;
+    });
+}
+
+
+  generateAIProfile(): void {
+    if (!this.aiPrompt.trim()) {
+      alert("Por favor ingresa un prompt antes de generar el perfil.");
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.apiService.getAIProfile(this.aiPrompt).subscribe(
+      (response) => {
+        console.log("Respuesta IA:", response);
+        this.sections = this.parseAPIResponseToSections(response.data); // Transformar la respuesta
+        this.profileGenerated = true; // Indica que los datos vienen de IA
+        this.currentView = 'crear-perfil-estructurado'; // Cambia la vista
+      },
+      (error) => {
+        console.error("Error al obtener el perfil de IA:", error);
+        alert("Hubo un error al generar el perfil.");
+      }
+    ).add(() => {
+      this.isLoading = false; // Deshabilita la carga
+    });
+  }
+
+
+
+
+  parseAPIResponseToSections(apiResponse: any): Section[] {
+    return apiResponse.Secciones.map((sectionData: any, sectionIndex: number) => ({
+      id: sectionIndex + 1, // ID autogenerado
+      name: sectionData.name,
+      totalWeight: sectionData.ponderacion,
+      subsections: sectionData.Subsecciones.map((subData: any, subIndex: number) => ({
+        id: subIndex + 1,
+        name: subData.name,
+        totalWeight: subData.ponderacion,
+        options: subData.values.map((value: any, optionIndex: number) => ({
+          id: optionIndex + 1,
+          name: value.name,
+          weight: value.ponderacion
+        })),
+        filteredOptions: subData.values.map((value: any, optionIndex: number) => ({
+          id: optionIndex + 1,
+          name: value.name,
+          weight: value.ponderacion
+        })),
+        selectedOptions: subData.values
+          .filter((value: any) => value.ponderacion > 0) // Solo selecciona opciones con peso mayor a 0
+          .map((value: any, optionIndex: number) => optionIndex + 1),
+        searchQuery: '',
+        showDropdown: false
+      }))
+    }));
+  }
+
+
+
+
+
+
+
+
+
 
 }
