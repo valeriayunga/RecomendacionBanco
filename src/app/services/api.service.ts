@@ -12,7 +12,7 @@ export class ApiService {
 
   // Método para obtener los datos del endpoint
   getPersonalMaps(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/home/get/personal_maps`);
+    return this.http.get<any>(`${this.apiUrl}/home/personal_maps/get`);
   }
 
   // Nuevo método para obtener los tags
