@@ -21,9 +21,26 @@ export class ApiService {
   }
 
   // Nuevo método para obtener perfiles por tag
+
+  getAIProfile(prompt: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ideal_profile/generate_profile`, {
+      params: { prompt: prompt }
+    });
+  }
+
+
+  publishProfile(profileData: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/ideal_profile/profile/update`, profileData, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }) // Asegura que se envía como JSON
+    });
+  }
+
+
+  // Nuevo método para obtener perfiles por tag
   getProfilesByTag(tag: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/ideal_profile/profile/tag/${tag}`);
   }
+
 
   // Método para obtener el PDF desde el endpoint
   getPdf(): Observable<Blob> {
