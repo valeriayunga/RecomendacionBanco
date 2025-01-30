@@ -1,64 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body>
-    <div class="min-h-screen bg-gray-50 flex">
-        <!-- Sidebar -->
-        <app-sidebar class="hidden md:block w-64 bg-white shadow-lg"></app-sidebar>
-
-        <!-- Contenido principal -->
-        <main class="flex-grow flex flex-col items-center justify-start p-8">
-            <!-- Header -->
-            <div class="mb-6 text-left">
-                <h1 class="text-4xl font-semibold text-gray-800">Bienvenido, Carlos Salas!</h1>
-            </div>
-
-            <!-- Contenedor central -->
-            <div class="flex flex-col items-center justify-center w-full h-3/4">
-                <!-- Gráfico animado -->
-                <div class="flex justify-center items-end gap-4 mb-12">
-                    <!-- Cada barra del gráfico -->
-                    <div *ngFor="let height of barHeights; let i = index" [ngStyle]="getBarStyle(i, height)"
-                        class="w-8 rounded bg-green-300" style="height: 50%;">
-                    </div>
-                </div>
-
-                <!-- Texto animado "Buscando" -->
-                <div *ngIf="!showSuccessMessage" class="flex justify-center items-center">
-                    <div class="animate-spin h-16 w-16 border-8 border-primary border-t-transparent rounded-full">
-                    </div>
-                    <p class="ml-4 text-2xl font-semibold text-gray-600">BUSCANDO...</p>
-                </div>
-
-                <!-- Mensaje y botón "Hecho" -->
-                <div *ngIf="showSuccessMessage" class="flex flex-col items-center">
-                    <!-- Mensaje -->
-                    <div
-                        class="flex items-center bg-green-100 border border-green-300 text-green-800 rounded-lg p-6 shadow w-full max-w-xl">
-                        <i class="fas fa-check-circle text-green-500 text-4xl mr-4"></i>
-                        <div>
-                            <h2 class="font-bold text-xl">Hecho</h2>
-                            <p class="text-base">Hemos encontrado a los mejores candidatos</p>
-                        </div>
-                    </div>
-                    <!-- Botón -->
-                    <div class="flex justify-center mt-6">
-                        <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700"
-                            (click)="redirigirMejorCandidato()">
-                            Visualizar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
+<div class="min-h-screen bg-gray-50 flex">
+  <!-- Sidebar -->
+  <app-sidebar class="hidden md:block w-64 bg-white shadow-lg"></app-sidebar>
+  
+  <!-- Contenido principal -->
+  <main class="flex-grow flex flex-col p-8 bg-gray-50">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-800">Bienvenido, Carlos Salas!</h1>
     </div>
-</body>
 
-</html>
+    <!-- Contenedor central -->
+    <div class="w-full max-w-7xl mx-auto">
+      <!-- Loading spinner -->
+      <div *ngIf="!showSuccessMessage" class="flex justify-center items-center h-64">
+        <div class="animate-spin h-16 w-16 border-8 border-primary border-t-transparent rounded-full"></div>
+        <p class="ml-4 text-2xl font-semibold text-gray-600">BUSCANDO...</p>
+      </div>
+
+      <!-- Resultados -->
+      <div *ngIf="showSuccessMessage" class="space-y-6">
+        <!-- Mensaje de éxito -->
+        <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded-lg shadow-sm">
+          <div class="flex items-center">
+            <i class="fas fa-check-circle text-green-500 text-2xl mr-3"></i>
+            <div>
+              <h2 class="font-bold text-lg text-green-800">¡Búsqueda Completada!</h2>
+              <p class="text-green-700">Hemos encontrado los mejores candidatos para tu posición</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de candidatos -->
+        <div *ngIf="recommendedCandidates" class="grid gap-6">
+          <div *ngFor="let candidate of recommendedCandidates; let i = index" 
+               class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+            <!-- Cabecera del candidato -->
+            <div class="bg-gradient-to-r from-primary to-primary-dark p-4 text-white">
+              <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold">Candidato {{i + 1}}</h3>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-sm">
+                  ID: {{candidate._id | slice:0:8}}...
+                </span>
+              </div>
+            </div>
+
+            <!-- Contenido del candidato -->
+            <div class="p-6 space-y-6">
+              <!-- Resumen -->
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-gray-700 mb-2">Resumen de Evaluación</h4>
+                <p class="text-gray-600 text-sm leading-relaxed">{{candidate.explicacion}}</p>
+              </div>
+
+              <!-- Secciones -->
+              <div class="grid md:grid-cols-2 gap-6">
+                <div *ngFor="let section of candidate.Secciones" 
+                     class="bg-white p-4 rounded-lg border border-gray-100">
+                  <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-semibold text-gray-800">{{section.name}}</h4>
+                    <span class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                      Ponderación: {{section.ponderacion}}
+                    </span>
+                  </div>
+                  
+                  <!-- Subsecciones -->
+                  <div *ngFor="let subsection of section.Subsecciones" class="mt-3">
+                    <h5 class="text-sm font-medium text-gray-700 mb-2">{{subsection.name}}</h5>
+                    <div class="space-y-2">
+                      <div *ngFor="let value of subsection.values" 
+                           class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span class="text-sm text-gray-600">{{value.name}}</span>
+                        <span class="text-sm font-medium text-primary">
+                          {{value.ponderacion}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="flex justify-center mt-8">
+          <button (click)="redirigirMejorCandidato()" 
+                  class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark 
+                         transition-colors duration-200 flex items-center space-x-2">
+            <i class="fas fa-home"></i>
+            <span>Volver al Home</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
