@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
                    });
                    this.displayedPersonalMaps = [...this.personalMapsList].slice(0, this.itemsPerPage);
                    this.totalPages = Math.ceil(this.personalMapsList.length / this.itemsPerPage);
-                 
+
                 }
                     this.loading = false;
               },
@@ -62,15 +62,17 @@ export class HomeComponent implements OnInit {
         this.apiService.getTags().subscribe({
             next: (response: any) => {
                 if (response && response.data) {
-                    this.allTags = response.data;
+                    // Eliminar duplicados con Set
+                    this.allTags = Array.from(new Set(response.data));
                     this.filteredTags = [...this.allTags];
-                  }
+                }
             },
             error: (error) => {
                 console.error('Error al cargar los tags:', error);
             },
         });
     }
+
 
     toggleSection(sectionName: string) {
       this.expandedSections[sectionName] = !this.expandedSections[sectionName];
@@ -150,7 +152,7 @@ export class HomeComponent implements OnInit {
                 ).slice(startIndex, startIndex + this.itemsPerPage);
        }
    }
-    
+
     showNotification(message: string): void {
         this.notificationMessage = message;
         setTimeout(() => {
