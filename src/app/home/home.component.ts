@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
+import { Router } from '@angular/router';
 import { PersonalMap, Profile } from './profile.model';
-// Importa la interface para los perfiles
 
 @Component({
     selector: 'app-home',
@@ -9,173 +9,150 @@ import { PersonalMap, Profile } from './profile.model';
     styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-    selectedProfile: string = '';
     personalMapsList: PersonalMap[] = [];
-    tagsList: string[] = [];
-    profilesList: Profile[] = [];
-    showModal = false;
-    loading = true;
+    displayedPersonalMaps: PersonalMap[] = [];
+    loading: boolean = true;
+    searchQuery: string = '';
     notificationMessage: string | null = null;
 
-    // Paginacion
     currentPage = 1;
-    itemsPerPage = 10;
-    displayedPersonalMaps: PersonalMap[] = [];
-    totalPages = 0;
+    itemsPerPage = 5;
+    totalPages = 1;
 
-    // Busqueda
-    searchQuery: string = '';
-    filteredPersonalMaps: PersonalMap[] = [];
-
-    // Expandir
-    expandedSections: { [key: string]: boolean } = {};
-    visibleTagsCount = 8;
-    visibleTags: string[] = [];
     tagSearchQuery: string = '';
     filteredTags: string[] = [];
-    defaultTags: string[] = [];
+    allTags: string[] = [];
+    selectedProfile: string | null = null;
+    showModal: boolean = false;
+    profilesList: Profile[] = [];
+    expandedSections: { [key: string]: boolean } = {};
 
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService, private router: Router) { }
 
     ngOnInit(): void {
-        this.getPersonalMaps();
-        this.getTags();
+        this.loadPersonalMaps();
+        this.loadTags();
     }
-toggleSection(sectionName: string) {
-    this.expandedSections[sectionName] = !this.expandedSections[sectionName];
-  }
-    getPersonalMaps(): void {
+
+    loadPersonalMaps(): void {
         this.loading = true;
-        this.apiService.getPersonalMaps().subscribe(
-            (response) => {
-                if (response.status === 200) {
-                    this.personalMapsList = response.data;
-                    this.updateDisplayedPersonalMaps();
-                    this.filteredPersonalMaps = [...this.personalMapsList];
-                } else {
-                    this.showNotification('Error al obtener los datos de los candidatos.');
-                    console.error('Error en la respuesta de la API:', response);
+        this.apiService.getPersonalMaps().subscribe({
+            next: (response: any) => {
+                if (response && response.data) {
+                  this.personalMapsList = response.data
+                  .filter((item: any) => item.personal_info)
+                  .map((item: any) => {
+                      const { personal_info, ...rest } = item;
+                     return { ...personal_info, ...rest }
+                   });
+                   this.displayedPersonalMaps = [...this.personalMapsList].slice(0, this.itemsPerPage);
+                   this.totalPages = Math.ceil(this.personalMapsList.length / this.itemsPerPage);
+                 
                 }
+                    this.loading = false;
+              },
+            error: (error) => {
+                console.error('Error al cargar los mapas personales:', error);
+                this.loading = false;
             },
-            (error) => {
-                this.showNotification('Error al comunicarse con el servidor.');
-                console.error('Error al obtener los datos:', error);
-            },
-             () => {
-                  this.loading = false; // Aseguramos de que el loading termine en cualquier caso
-             }
-        );
+        });
     }
 
+    loadTags(): void {
+        this.apiService.getTags().subscribe({
+            next: (response: any) => {
+                if (response && response.data) {
+                    this.allTags = response.data;
+                    this.filteredTags = [...this.allTags];
+                  }
+            },
+            error: (error) => {
+                console.error('Error al cargar los tags:', error);
+            },
+        });
+    }
 
-    getTags(): void {
-      this.apiService.getTags().subscribe(
-          (response) => {
-              if (response.status === 200) {
-                  // Eliminar duplicados usando Set
-                  this.tagsList = Array.from(new Set(response.data));
-                  this.filteredTags = [...this.tagsList];
-                  this.defaultTags = this.tagsList.slice(0, 4);
-              } else {
-                  this.showNotification('Error al obtener los tags.');
-                  console.error('Error en la respuesta de la API:', response);
-              }
-          },
-          (error) => {
-              this.showNotification('Error al comunicarse con el servidor.');
-              console.error('Error al obtener los tags:', error);
-          },
-          () => {
-              this.loading = false;
-          }
-      );
-  }
+    toggleSection(sectionName: string) {
+      this.expandedSections[sectionName] = !this.expandedSections[sectionName];
+    }
 
-
-  updateVisibleTags() {
-   this.visibleTags = this.tagsList.slice(0, this.visibleTagsCount);
-  }
-
-  showMoreTags(){
-      this.visibleTagsCount = this.tagsList.length;
-      this.updateVisibleTags()
-  }
+  filterTags(): void {
+        if (!this.tagSearchQuery) {
+            this.filteredTags = [...this.allTags];
+        } else {
+            this.filteredTags = this.allTags.filter(tag =>
+                tag.toLowerCase().includes(this.tagSearchQuery.toLowerCase())
+            );
+        }
+    }
 
     selectProfile(tag: string): void {
-         this.loading = true;
-         this.selectedProfile = tag;
-         this.apiService.getProfilesByTag(tag).subscribe(
-            (response) => {
-              if (response.status === 200) {
-                this.profilesList = response.data;
-                this.showModal = true;
-               } else {
-                    this.showNotification('Error al obtener los perfiles');
-                    console.error('Error en la respuesta de la API:', response);
-                }
+      this.selectedProfile = tag;
+      this.apiService.getProfilesByTag(tag).subscribe({
+           next: (response: any) => {
+                if (response && response.data) {
+                    this.profilesList = response.data;
+                    this.showModal = true;
+                  }
+                },
+            error: (error) => {
+                console.error('Error al cargar los perfiles:', error);
             },
-            (error) => {
-                this.showNotification('Error al comunicarse con el servidor.');
-               console.error('Error al obtener los perfiles:', error);
-            },
-             () => {
-                 this.loading = false; // Aseguramos de que el loading termine en cualquier caso
-            }
-        );
-    }
-    filterTags(): void {
-      if (!this.tagSearchQuery) {
-          this.filteredTags = [...this.tagsList];
-          return;
-      }
-      this.filteredTags = this.tagsList.filter(tag =>
-          tag.toLowerCase().includes(this.tagSearchQuery.toLowerCase())
-      );
-    }
+       });
+     }
     closeModal(): void {
         this.showModal = false;
     }
 
-    updateDisplayedPersonalMaps() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.displayedPersonalMaps = this.filteredPersonalMaps.slice(startIndex, endIndex);
-     this.totalPages = Math.ceil(this.filteredPersonalMaps.length / this.itemsPerPage);
-    }
-
-    previousPage() {
-        if(this.currentPage > 1){
-            this.currentPage--;
-            this.updateDisplayedPersonalMaps();
+    onSearch(): void {
+         if (!this.searchQuery) {
+            this.displayedPersonalMaps = [...this.personalMapsList].slice(0, this.itemsPerPage);
+              this.currentPage = 1;
+        } else {
+            const searchTerm = this.searchQuery.toLowerCase();
+            this.displayedPersonalMaps = this.personalMapsList.filter(
+                (map: any) =>
+                map.nombre_completo?.toLowerCase().includes(searchTerm) ||
+                map.correo?.toLowerCase().includes(searchTerm)
+             ).slice(0, this.itemsPerPage);
+               this.currentPage = 1;
+             this.totalPages = Math.ceil(this.personalMapsList.filter(
+                  (map: any) =>
+                    map.nombre_completo?.toLowerCase().includes(searchTerm) ||
+                     map.correo?.toLowerCase().includes(searchTerm)
+                ).length / this.itemsPerPage)
         }
     }
-    nextPage() {
-        if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-        this.updateDisplayedPersonalMaps();
-        }
-    }
-    updateCandidates(){
-      this.showNotification('Candidatos actualizados.');
-      // logica para actualizar los candidadtos
-    }
 
-    onSearch(){
-     if (!this.searchQuery) {
-        this.filteredPersonalMaps = [...this.personalMapsList];
-      } else {
-          this.filteredPersonalMaps = this.personalMapsList.filter(
-          (map) =>
-            map.nombre_completo.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            map.correo.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+    previousPage(): void {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.updateDisplayedItems();
       }
-        this.currentPage = 1; // Restablecer a la primera página al realizar una búsqueda
-        this.updateDisplayedPersonalMaps();
     }
 
+    nextPage(): void {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+         this.updateDisplayedItems();
+      }
+  }
+
+  updateDisplayedItems(): void {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        this.displayedPersonalMaps = [...this.personalMapsList].slice(startIndex, startIndex + this.itemsPerPage);
+      if (this.searchQuery) {
+          const searchTerm = this.searchQuery.toLowerCase();
+          this.displayedPersonalMaps = this.personalMapsList.filter(
+                (map: any) =>
+                map.nombre_completo?.toLowerCase().includes(searchTerm) ||
+                map.correo?.toLowerCase().includes(searchTerm)
+                ).slice(startIndex, startIndex + this.itemsPerPage);
+       }
+   }
+    
     showNotification(message: string): void {
-      this.notificationMessage = message;
+        this.notificationMessage = message;
         setTimeout(() => {
           this.notificationMessage = null;
         }, 3000);
