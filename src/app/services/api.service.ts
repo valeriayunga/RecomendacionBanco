@@ -53,7 +53,10 @@ export class ApiService {
       responseType: 'blob' // Indica que la respuesta es un Blob (archivo binario)
     });
   }
-
+  getProfile(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/home/profile/get/${id}`);
+  }
+  
   uploadPDFs(files: File[]): Observable<any> {
     const formData = new FormData();
     files.forEach(file => {

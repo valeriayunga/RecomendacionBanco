@@ -1,0 +1,122 @@
+<div class="min-h-screen bg-gray-50 p-8">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+    </div>
+
+    <div *ngIf="!loading && profile" class="w-full max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">
+                Perfil de: <span class="text-primary">{{ personalInfo.nombre_completo }}</span>
+            </h1>
+        </div>
+
+        <!-- Información Personal Card -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 mb-6">
+            <div class="bg-gradient-to-r from-primary to-primary-dark p-4 text-white">
+                <h2 class="text-xl font-semibold">Información Personal</h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Cédula:</span>
+                            <span class="text-gray-600">{{ personalInfo.numero_cedula }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Teléfono:</span>
+                            <span class="text-gray-600">{{ personalInfo.telefono }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Email:</span>
+                            <span class="text-gray-600">{{ personalInfo.correo }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">LinkedIn:</span>
+                            <a class="text-blue-600 hover:text-blue-800" [href]="personalInfo.linkedin" target="_blank">Ver Perfil</a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Estado Civil:</span>
+                            <span class="text-gray-600">{{ personalInfo.estado_civil }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Fecha de Nacimiento:</span>
+                            <span class="text-gray-600">{{ personalInfo.fecha_nacimiento }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Edad:</span>
+                            <span class="text-gray-600">{{ personalInfo.edad }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Aspiración Salarial:</span>
+                            <span class="text-gray-600">{{ personalInfo.aspiracion_salarial }}</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Tipo de Sangre:</span>
+                            <span class="text-gray-600">{{ personalInfo.tipo_sangre }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="font-medium text-gray-700">Dirección:</span>
+                            <span class="text-gray-600">{{ personalInfo.direccion }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secciones -->
+        <div class="space-y-6">
+            <div *ngFor="let section of profile.Secciones" 
+                 class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <!-- Cabecera de sección -->
+                <div class="bg-gradient-to-r from-primary to-primary-dark p-4 text-white">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold">{{ section.name }}</h3>
+                        <span class="px-3 py-1 bg-white/20 rounded-full text-sm">
+                            Ponderación Total: {{ section.ponderacion }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Contenido de sección -->
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div *ngFor="let subsection of section.Subsecciones" 
+                             class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold text-gray-700">{{ subsection.name }}</h4>
+                                <span class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                                    Ponderación: {{ subsection.ponderacion }}
+                                </span>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div *ngFor="let value of subsection.values"
+                                     class="flex items-center justify-between p-2 bg-white rounded border border-gray-100">
+                                    <span class="text-gray-700">{{ value.name }}</span>
+                                    <span class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                                        {{ value.ponderacion }} pts
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Container -->
+        <div *ngIf="notificationMessage" 
+             class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-md shadow-md animate-slide-in">
+            {{ notificationMessage }}
+        </div>
+    </div>
+</div>

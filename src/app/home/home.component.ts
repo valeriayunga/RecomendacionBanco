@@ -34,26 +34,21 @@ export class HomeComponent implements OnInit {
         this.loadTags();
     }
 
-    loadPersonalMaps(): void {
+   loadPersonalMaps(): void {
         this.loading = true;
         this.apiService.getPersonalMaps().subscribe({
             next: (response: any) => {
                 if (response && response.data) {
-                  this.personalMapsList = response.data
-                  .filter((item: any) => item.personal_info)
-                  .map((item: any) => {
-                      const { personal_info, ...rest } = item;
-                     return { ...personal_info, ...rest }
-                   });
-                   this.displayedPersonalMaps = [...this.personalMapsList].slice(0, this.itemsPerPage);
-                   this.totalPages = Math.ceil(this.personalMapsList.length / this.itemsPerPage);
-                 
+                    this.personalMapsList = response.data;
+                    this.displayedPersonalMaps = [...this.personalMapsList].slice(0, this.itemsPerPage);
+                    this.totalPages = Math.ceil(this.personalMapsList.length / this.itemsPerPage);
                 }
-                    this.loading = false;
-              },
+                this.loading = false;
+            },
             error: (error) => {
                 console.error('Error al cargar los mapas personales:', error);
                 this.loading = false;
+                this.showNotification('Error al cargar los candidatos.');
             },
         });
     }
@@ -62,9 +57,10 @@ export class HomeComponent implements OnInit {
         this.apiService.getTags().subscribe({
             next: (response: any) => {
                 if (response && response.data) {
-                    this.allTags = response.data;
+                    // Eliminar duplicados usando Set
+                    this.allTags = Array.from(new Set(response.data.flat()));
                     this.filteredTags = [...this.allTags];
-                  }
+                }
             },
             error: (error) => {
                 console.error('Error al cargar los tags:', error);
@@ -73,10 +69,10 @@ export class HomeComponent implements OnInit {
     }
 
     toggleSection(sectionName: string) {
-      this.expandedSections[sectionName] = !this.expandedSections[sectionName];
+        this.expandedSections[sectionName] = !this.expandedSections[sectionName];
     }
 
-  filterTags(): void {
+    filterTags(): void {
         if (!this.tagSearchQuery) {
             this.filteredTags = [...this.allTags];
         } else {
@@ -87,74 +83,75 @@ export class HomeComponent implements OnInit {
     }
 
     selectProfile(tag: string): void {
-      this.selectedProfile = tag;
-      this.apiService.getProfilesByTag(tag).subscribe({
-           next: (response: any) => {
+        this.selectedProfile = tag;
+        this.apiService.getProfilesByTag(tag).subscribe({
+            next: (response: any) => {
                 if (response && response.data) {
                     this.profilesList = response.data;
                     this.showModal = true;
-                  }
-                },
+                }
+            },
             error: (error) => {
                 console.error('Error al cargar los perfiles:', error);
             },
-       });
-     }
+        });
+    }
     closeModal(): void {
         this.showModal = false;
     }
 
     onSearch(): void {
-         if (!this.searchQuery) {
+        if (!this.searchQuery) {
             this.displayedPersonalMaps = [...this.personalMapsList].slice(0, this.itemsPerPage);
-              this.currentPage = 1;
+            this.currentPage = 1;
+            this.totalPages = Math.ceil(this.personalMapsList.length / this.itemsPerPage);
         } else {
             const searchTerm = this.searchQuery.toLowerCase();
             this.displayedPersonalMaps = this.personalMapsList.filter(
                 (map: any) =>
                 map.nombre_completo?.toLowerCase().includes(searchTerm) ||
                 map.correo?.toLowerCase().includes(searchTerm)
-             ).slice(0, this.itemsPerPage);
-               this.currentPage = 1;
-             this.totalPages = Math.ceil(this.personalMapsList.filter(
-                  (map: any) =>
-                    map.nombre_completo?.toLowerCase().includes(searchTerm) ||
-                     map.correo?.toLowerCase().includes(searchTerm)
-                ).length / this.itemsPerPage)
+            ).slice(0, this.itemsPerPage);
+            this.currentPage = 1;
+            this.totalPages = Math.ceil(this.personalMapsList.filter(
+                (map: any) =>
+                map.nombre_completo?.toLowerCase().includes(searchTerm) ||
+                map.correo?.toLowerCase().includes(searchTerm)
+            ).length / this.itemsPerPage)
         }
     }
 
     previousPage(): void {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-        this.updateDisplayedItems();
-      }
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.updateDisplayedItems();
+        }
     }
 
     nextPage(): void {
         if (this.currentPage < this.totalPages) {
-          this.currentPage++;
-         this.updateDisplayedItems();
-      }
-  }
+            this.currentPage++;
+            this.updateDisplayedItems();
+        }
+    }
 
-  updateDisplayedItems(): void {
+    updateDisplayedItems(): void {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         this.displayedPersonalMaps = [...this.personalMapsList].slice(startIndex, startIndex + this.itemsPerPage);
-      if (this.searchQuery) {
-          const searchTerm = this.searchQuery.toLowerCase();
-          this.displayedPersonalMaps = this.personalMapsList.filter(
+        if (this.searchQuery) {
+            const searchTerm = this.searchQuery.toLowerCase();
+            this.displayedPersonalMaps = this.personalMapsList.filter(
                 (map: any) =>
-                map.nombre_completo?.toLowerCase().includes(searchTerm) ||
-                map.correo?.toLowerCase().includes(searchTerm)
-                ).slice(startIndex, startIndex + this.itemsPerPage);
-       }
-   }
-    
+                    map.nombre_completo?.toLowerCase().includes(searchTerm) ||
+                    map.correo?.toLowerCase().includes(searchTerm)
+            ).slice(startIndex, startIndex + this.itemsPerPage);
+        }
+    }
+
     showNotification(message: string): void {
         this.notificationMessage = message;
         setTimeout(() => {
-          this.notificationMessage = null;
+            this.notificationMessage = null;
         }, 3000);
     }
 }

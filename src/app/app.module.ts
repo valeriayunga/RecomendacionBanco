@@ -11,6 +11,7 @@ import { VerPdfComponent } from './ver-pdf/ver-pdf.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CandidatoIdoneoComponent } from './candidato-idoneo/candidato-idoneo.component';
 import { BuscarCandidatoComponent } from './buscar-candidato/buscar-candidato.component';
+import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,6 +21,7 @@ import { BuscarCandidatoComponent } from './buscar-candidato/buscar-candidato.co
     VerPdfComponent,
     CandidatoIdoneoComponent,
     BuscarCandidatoComponent,
+    ProfileDetailComponent,
 
 
   ],
