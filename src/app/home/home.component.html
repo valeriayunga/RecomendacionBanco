@@ -159,17 +159,16 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                   <tr *ngFor="let map of displayedPersonalMaps" class="hover:bg-gray-50">
-                      <td class="px-6 py-4 whitespace-nowrap">{{ map.nombre_completo }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ map.correo }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ map.telefono }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">$ {{ map.aspiracion_salarial }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ map.personal_info.nombre_completo }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ map.personal_info.correo }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ map.personal_info.telefono }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">$ {{ map.personal_info.aspiracion_salarial }}</td>
                        <td class="px-6 py-4 whitespace-nowrap">
-                        <button class="text-blue-600 hover:text-blue-900" [routerLink]="['/perfil', map._id]">
+                        <button class="text-blue-600 hover:text-blue-900" [routerLink]="['/perfil', map.personal_info._id]">
                           Ver Perfil
                         </button>
                       </td>
                   </tr>
-                  <!-- Add more rows as needed -->
               </tbody>
           </table>
           <div class="flex justify-center mt-4">

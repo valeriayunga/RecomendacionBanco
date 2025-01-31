@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { ActivatedRoute } from '@angular/router'; // Importa ActivatedRoute
-import { PersonalMap } from '../home/profile.model';
-
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-profile-detail',
@@ -11,18 +9,18 @@ import { PersonalMap } from '../home/profile.model';
 })
 export class ProfileDetailComponent implements OnInit {
     profile: any;
-    personalInfo: any;
     loading: boolean = true;
     notificationMessage: string | null = null;
     expandedSections: { [key: string]: boolean } = {};
-    personalMapData: PersonalMap | null = null;
 
     constructor(private apiService: ApiService, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
             const profileId = params['_id'];
-            this.loadProfile(profileId);
+            if (profileId) {
+                this.loadProfile(profileId);
+            }
         });
     }
 
@@ -31,22 +29,28 @@ export class ProfileDetailComponent implements OnInit {
         this.apiService.getProfile(profileId).subscribe({
             next: (response: any) => {
                 if (response && response.data) {
-                    this.profile = response.data;
-                    this.personalInfo = this.profile.personal_info;
-                    this.personalMapData = this.profile as PersonalMap;
+                     this.profile = response.data;
                 }
                 this.loading = false;
             },
             error: (error) => {
                 console.error('Error al cargar el perfil:', error);
                 this.loading = false;
-                this.showNotification('Error al cargar el perfil.')
+                this.showNotification('No se pudo cargar el perfil. Inténtalo más tarde.');
             },
         });
     }
-    toggleSection(sectionName: string) {
+  objectKeys(obj: any): string[] {
+    return Object.keys(obj);
+  }
+    toggleSection(sectionName: string): void {
         this.expandedSections[sectionName] = !this.expandedSections[sectionName];
     }
+
+    isSectionExpanded(sectionName: string): boolean {
+        return this.expandedSections[sectionName] || false;
+    }
+
     showNotification(message: string): void {
         this.notificationMessage = message;
         setTimeout(() => {

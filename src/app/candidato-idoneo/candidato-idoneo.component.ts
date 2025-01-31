@@ -1,35 +1,72 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { HttpClient } from '@angular/common/http';
-
 
 @Component({
     selector: 'app-candidato-idoneo',
     templateUrl: './candidato-idoneo.component.html',
     styleUrls: ['./candidato-idoneo.component.css']
 })
-export class CandidatoIdoneoComponent {
-    selectedProfile: string = '';
+export class CandidatoIdoneoComponent implements OnInit {
+    selectedTag: string | null = null;
     files: { file: File; status: 'uploading' | 'uploaded' }[] = [];
     showUploadFiles: boolean = false;
     showSuccessMessage: boolean = false;
     recommendedCandidates: any = null;
-    loading:boolean=false;
+    loading: boolean = false;
+    tagSearchQuery: string = '';
+    filteredTags: string[] = [];
+    allTags: string[] = [];
+    profileData:any = null;
+
 
     constructor(private router: Router, private apiService: ApiService, private http: HttpClient) { }
 
-    selectProfile(profile: string) {
-        this.selectedProfile = profile;
-        this.showUploadFiles = false; // Resetea el contenedor al cambiar de perfil
-        this.showSuccessMessage = false; // Oculta mensaje de éxito al seleccionar nuevo perfil
-        this.recommendedCandidates = null;
+    ngOnInit(): void {
+        this.loadTags();
+    }
+    loadTags(): void {
+        this.apiService.getTags().subscribe({
+            next: (response: any) => {
+                if (response && response.data) {
+                    this.allTags = Array.from(new Set(response.data.flat()));
+                    this.filteredTags = [...this.allTags];
+                }
+            },
+            error: (error) => {
+                console.error('Error al cargar los tags:', error);
+            },
+        });
     }
 
-    buscarMejorCandidato() {
-        this.loading = true; // Activa el spinner
-        this.router.navigate(['/buscar-candidato']);   
+    filterTags(): void {
+      if (!this.tagSearchQuery) {
+          this.filteredTags = [...this.allTags];
+      } else {
+          this.filteredTags = this.allTags.filter((tag) =>
+              tag.toLowerCase().includes(this.tagSearchQuery.toLowerCase())
+          );
+      }
     }
+    selectProfile(tag: string): void {
+        if (this.selectedTag === tag) {
+          this.selectedTag = null; // Deseleccionar si se hace clic nuevamente
+        } else {
+          this.selectedTag = tag;
+        }
+    }
+
+
+  buscarMejorCandidato() {
+        this.loading = true; // Activa el spinner
+          if (this.profileData) {
+                 this.router.navigate(['/buscar-candidato'], { state: { profile: this.profileData } });
+          }else {
+            alert('Error al obtener el perfil del Tag')
+          }
+    }
+
 
     onFileSelected(event: any): void {
         const selectedFiles = event.target.files;
@@ -66,24 +103,41 @@ export class CandidatoIdoneoComponent {
     }
 
     confirmUpload(): void {
-        if (this.files.length > 0) {
-            const filesToUpload = this.files.map(fileObj => fileObj.file);
-            this.apiService.uploadPDFs(filesToUpload).subscribe({
-                next: response => {
-                    console.log('Archivos procesados exitosamente:', response);
-                    this.showUploadFiles = false;
-                    this.showSuccessMessage = true;
-                },
-                error: err => {
-                    console.error('Error al procesar los archivos:', err);
-                }
-            });
+        if (this.files.length > 0 && this.selectedTag) {
+             this.apiService.getProfilesByTag(this.selectedTag).subscribe({
+                    next: (response: any) => {
+                      if (response && response.data && response.data.length >0) {
+                            this.profileData = response.data[0]
+                            const filesToUpload = this.files.map(fileObj => fileObj.file);
+                            this.apiService.uploadPDFs(filesToUpload).subscribe({
+                                next: response => {
+                                    console.log('Archivos procesados exitosamente:', response);
+                                    this.showUploadFiles = false;
+                                    this.showSuccessMessage = true;
+
+                                },
+                                error: err => {
+                                    console.error('Error al procesar los archivos:', err);
+                                    alert('Error al procesar los archivos:')
+                                }
+                            });
+
+                      }else {
+                         alert('Error al obtener el perfil del Tag')
+                      }
+                    },
+                    error: (error) => {
+                      console.error('Error al cargar los perfiles:', error);
+                         alert('Error al obtener el perfil del Tag')
+                    },
+             })
         } else {
             console.warn('No hay archivos seleccionados.');
+                alert('No hay archivos seleccionados')
         }
     }
 
-    
+
 
     getFileIcon(fileObj: { file: File }): string {
         const extension = fileObj.file.name.split('.').pop()?.toLowerCase();
@@ -111,4 +165,4 @@ export class CandidatoIdoneoComponent {
                 return 'fas fa-file text-gray-500';
         }
     }
-}
+}   

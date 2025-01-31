@@ -38,6 +38,7 @@ export interface Familiares {
 }
 
 export interface PersonalInfo {
+_id: any|string;
   nombre_completo: string;
   numero_cedula: string;
   telefono: string;
@@ -57,6 +58,7 @@ export interface PersonalInfo {
 
 export interface PersonalMap {
   personal_info: PersonalInfo;
+  Tag: string | string[]; // Añadir esta línea
 }
 
 export interface Value {
